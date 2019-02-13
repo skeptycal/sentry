@@ -134,7 +134,9 @@ async function createShortIdLookupResult(shortIdLookupPromise) {
       model: shortIdLookup.group,
       sourceType: 'issue',
       resultType: 'issue',
-      to: `/${shortIdLookup.organizationSlug}/${shortIdLookup.projectSlug}/issues/${shortIdLookup.groupId}/`,
+      to: `/${shortIdLookup.organizationSlug}/${shortIdLookup.projectSlug}/issues/${
+        shortIdLookup.groupId
+      }/`,
     },
   };
 }
@@ -150,7 +152,9 @@ async function createEventIdLookupResult(eventIdLookupPromise) {
       description: `${event && event.metadata && event.metadata.value}`,
       sourceType: 'event',
       resultType: 'event',
-      to: `/${eventIdLookup.organizationSlug}/${eventIdLookup.projectSlug}/issues/${eventIdLookup.groupId}/events/${eventIdLookup.eventId}/`,
+      to: `/${eventIdLookup.organizationSlug}/${eventIdLookup.projectSlug}/issues/${
+        eventIdLookup.groupId
+      }/events/${eventIdLookup.eventId}/`,
     },
   };
 }

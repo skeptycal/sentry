@@ -189,7 +189,8 @@ const SuggestedOwners = createReactClass({
                   project,
                   organization: org,
                   issueId: group.id,
-                })}
+                })
+              }
               size="small"
               className="btn btn-default btn-sm btn-create-ownership-rule"
             >

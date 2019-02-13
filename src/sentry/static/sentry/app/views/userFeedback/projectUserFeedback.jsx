@@ -57,7 +57,10 @@ const ProjectUserFeedback = createReactClass({
 
   componentWillMount() {
     // Redirect any Sentry 10 user that has followed an old link and ended up here
-    const {organization, params: {orgId}} = this.props;
+    const {
+      organization,
+      params: {orgId},
+    } = this.props;
     const hasSentry10 = new Set(organization.features).has('sentry10');
     if (hasSentry10) {
       const projectId = this.context.project.id;

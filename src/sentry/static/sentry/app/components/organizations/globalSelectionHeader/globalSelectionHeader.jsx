@@ -326,8 +326,9 @@ class GlobalSelectionHeader extends React.Component {
           tooltipOptions={{placement: 'bottom'}}
         >
           <BackToIssues
-            to={`/organizations/${this.props.organization.slug}/issues/${window.location
-              .search}`}
+            to={`/organizations/${this.props.organization.slug}/issues/${
+              window.location.search
+            }`}
           >
             <InlineSvg src="icon-arrow-left" />
           </BackToIssues>

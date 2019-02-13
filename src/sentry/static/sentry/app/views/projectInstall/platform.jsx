@@ -110,7 +110,10 @@ const ProjectInstallPlatform = createReactClass({
 
   render() {
     const {integration, platform} = this.state;
-    const {organization, params: {orgId, projectId}} = this.props;
+    const {
+      organization,
+      params: {orgId, projectId},
+    } = this.props;
 
     if (!integration || !platform) {
       return <NotFound />;

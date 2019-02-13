@@ -44,7 +44,7 @@ class OnboardingStatus extends React.Component {
     const allDisplayedTasks = TodoList.TASKS.filter(task => task.display);
 
     const percentage = Math.round(
-      doneTasks.length / allDisplayedTasks.length * 100
+      (doneTasks.length / allDisplayedTasks.length) * 100
     ).toString();
 
     const style = {
@@ -60,7 +60,9 @@ class OnboardingStatus extends React.Component {
       <div className={currentPanel === 'todos' ? 'onboarding active' : 'onboarding'}>
         <Tooltip
           title={t(
-            `Getting started with Sentry: <br />${doneTasks.length} / ${allDisplayedTasks.length} tasks completed`
+            `Getting started with Sentry: <br />${doneTasks.length} / ${
+              allDisplayedTasks.length
+            } tasks completed`
           )}
           tooltipOptions={{html: true}}
         >
@@ -72,16 +74,15 @@ class OnboardingStatus extends React.Component {
             <div className="slider" style={style} />
           </div>
         </Tooltip>
-        {showPanel &&
-          currentPanel === 'todos' && (
-            <SidebarPanel
-              collapsed={collapsed}
-              title="Getting Started with Sentry"
-              hidePanel={hidePanel}
-            >
-              <TodoList />
-            </SidebarPanel>
-          )}
+        {showPanel && currentPanel === 'todos' && (
+          <SidebarPanel
+            collapsed={collapsed}
+            title="Getting Started with Sentry"
+            hidePanel={hidePanel}
+          >
+            <TodoList />
+          </SidebarPanel>
+        )}
       </div>
     );
   }

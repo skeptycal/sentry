@@ -100,7 +100,11 @@ const GroupTagValues = createReactClass({
       return <LoadingError onRetry={this.fetchData} />;
     }
 
-    const {organization, group, params: {orgId, projectId}} = this.props;
+    const {
+      organization,
+      group,
+      params: {orgId, projectId},
+    } = this.props;
     const tagKey = this.state.tagKey;
 
     const sortedTagValueList = sortBy(
@@ -165,8 +169,9 @@ const GroupTagValues = createReactClass({
         <h3>
           {tagKey.key == 'user' ? t('Affected Users') : tagKey.name}
           <a
-            href={`/${orgId}/${group.project.slug}/issues/${group.id}/tags/${this.props
-              .params.tagKey}/export/`}
+            href={`/${orgId}/${group.project.slug}/issues/${group.id}/tags/${
+              this.props.params.tagKey
+            }/export/`}
             className="btn btn-default btn-sm"
             style={{marginLeft: 10}}
           >

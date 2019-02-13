@@ -3,9 +3,13 @@ import styled from 'react-emotion';
 const getBackgroundColor = p => {
   if (p.color) return `background: ${p.color};`;
 
-  return `background: ${p.status === 'error'
-    ? p.theme.error
-    : p.status === 'ok' ? p.theme.success : p.theme.disabled};`;
+  return `background: ${
+    p.status === 'error'
+      ? p.theme.error
+      : p.status === 'ok'
+      ? p.theme.success
+      : p.theme.disabled
+  };`;
 };
 
 const getSize = p => `

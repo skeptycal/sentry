@@ -155,7 +155,9 @@ describe('Sentry App Installations', function() {
         wrapper.instance().install(sentryAppWithQuery);
         await tick();
         expect(window.location.assign).toHaveBeenCalledWith(
-          `https://example.com/setup?code=${install.code}&hello=1&installationId=${install.uuid}`
+          `https://example.com/setup?code=${install.code}&hello=1&installationId=${
+            install.uuid
+          }`
         );
       });
     });

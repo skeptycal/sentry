@@ -179,7 +179,8 @@ const CreateProject = createReactClass({
                     onClick={() =>
                       openCreateTeamModal({
                         organization,
-                      })}
+                      })
+                    }
                   >
                     {t('Create a Team')}
                   </Button>

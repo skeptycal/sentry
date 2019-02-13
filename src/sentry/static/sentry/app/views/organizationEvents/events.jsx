@@ -177,28 +177,26 @@ class OrganizationEvents extends AsyncView {
           onUpdateComplete={this.handleTableUpdateComplete}
         />
 
-        {!loading &&
-          !reloading &&
-          !error && (
-            <Flex align="center" justify="space-between">
-              <RowDisplay>
-                {events.length ? t(`Results ${this.renderRowCounts()}`) : t('No Results')}
-                {!!events.length && (
-                  <Feature features={['internal-catchall']}>
-                    <TotalEventCount
-                      organization={organization}
-                      location={location}
-                      isAllResults={
-                        !parsedLinks.previous.results && !parsedLinks.next.results
-                      }
-                      numRows={events.length}
-                    />
-                  </Feature>
-                )}
-              </RowDisplay>
-              <Pagination pageLinks={eventsPageLinks} className="" />
-            </Flex>
-          )}
+        {!loading && !reloading && !error && (
+          <Flex align="center" justify="space-between">
+            <RowDisplay>
+              {events.length ? t(`Results ${this.renderRowCounts()}`) : t('No Results')}
+              {!!events.length && (
+                <Feature features={['internal-catchall']}>
+                  <TotalEventCount
+                    organization={organization}
+                    location={location}
+                    isAllResults={
+                      !parsedLinks.previous.results && !parsedLinks.next.results
+                    }
+                    numRows={events.length}
+                  />
+                </Feature>
+              )}
+            </RowDisplay>
+            <Pagination pageLinks={eventsPageLinks} className="" />
+          </Flex>
+        )}
       </React.Fragment>
     );
   }

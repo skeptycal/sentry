@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/lib/Modal';
 import styled from 'react-emotion';
 
+import withApi from 'app/utils/withApi';
+import InlineSvg from 'app/components/inlineSvg';
 import {addSuccessMessage, addErrorMessage} from 'app/actionCreators/indicator';
 import AsyncComponent from 'app/components/asyncComponent';
 import IssueSyncListElement, {
@@ -151,8 +153,9 @@ class ExternalIssueActions extends AsyncComponent {
   }
 }
 
-export class SentryAppExternalIssueActions extends React.Component {
+class SentryAppExternalIssueActions extends React.Component {
   static propTypes = {
+    api: PropTypes.object.isRequired,
     group: PropTypes.object.isRequired,
     sentryAppComponent: PropTypes.object.isRequired,
     sentryAppInstallation: PropTypes.object,
@@ -164,13 +167,24 @@ export class SentryAppExternalIssueActions extends React.Component {
 
     this.state = {
       action: 'create',
+      externalIssue: props.externalIssue,
       showModal: false,
     };
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.externalIssue !== prevProps.externalIssue) {
+      this.updateExternalIssue(this.props.externalIssue);
+    }
+  }
+
+  updateExternalIssue(externalIssue) {
+    this.setState({externalIssue});
+  }
+
   showModal = () => {
     // Only show the modal when we don't have a linked issue
-    !this.props.externalIssue && this.setState({showModal: true});
+    !this.state.externalIssue && this.setState({showModal: true});
   };
 
   hideModal = () => {
@@ -185,6 +199,38 @@ export class SentryAppExternalIssueActions extends React.Component {
     this.setState({action: 'create'});
   };
 
+  deleteIssue = () => {
+    const {api, group} = this.props;
+    const {externalIssue} = this.state;
+    const url = `/issues/${group.id}/external-issues/${externalIssue.id}/`;
+
+    api.request(url, {
+      method: 'DELETE',
+      success: data => {
+        this.setState({externalIssue: null});
+        addSuccessMessage(t('Successfully unlinked issue.'));
+      },
+      error: error => {
+        addErrorMessage(t('Unable to unlink issue.'));
+      },
+    });
+  };
+
+  onAddRemoveClick = () => {
+    const {externalIssue} = this.state;
+
+    if (!externalIssue) {
+      this.showModal();
+    } else {
+      this.deleteIssue();
+    }
+  };
+
+  onSubmitSuccess = externalIssue => {
+    this.setState({externalIssue});
+    this.hideModal();
+  };
+
   iconExists() {
     try {
       require(`../../icons/${this.props.sentryAppComponent.sentryApp.slug}.svg`);
@@ -195,11 +241,13 @@ export class SentryAppExternalIssueActions extends React.Component {
   }
 
   get link() {
-    const {sentryAppComponent, externalIssue} = this.props;
+    const {sentryAppComponent} = this.props;
+    const {externalIssue} = this.state;
+    const name = sentryAppComponent.sentryApp.name;
 
     let url = '#';
     let icon = 'icon-generic-box';
-    let displayName = tct('Link [name] Issue', {name: sentryAppComponent.sentryApp.name});
+    let displayName = tct('Link [name] Issue', {name});
 
     if (externalIssue) {
       url = externalIssue.webUrl;
@@ -211,12 +259,19 @@ export class SentryAppExternalIssueActions extends React.Component {
     }
 
     return (
-      <React.Fragment>
-        <IntegrationIcon src={icon} />
-        <IntegrationLink onClick={this.showModal} href={url}>
-          {displayName}
-        </IntegrationLink>
-      </React.Fragment>
+      <IssueLinkContainer>
+        <IssueLink>
+          <IntegrationIcon src={icon} />
+          <IntegrationLink onClick={this.showModal} href={url}>
+            {displayName}
+          </IntegrationLink>
+        </IssueLink>
+        <AddRemoveIcon
+          src="icon-close"
+          isLinked={!!externalIssue}
+          onClick={this.onAddRemoveClick}
+        />
+      </IssueLinkContainer>
     );
   }
 
@@ -243,7 +298,7 @@ export class SentryAppExternalIssueActions extends React.Component {
             sentryAppInstallation={sentryAppInstallation}
             config={sentryAppComponent.schema}
             action={action}
-            onSubmitSuccess={this.hideModal}
+            onSubmitSuccess={this.onSubmitSuccess}
           />
         </Modal.Body>
       </Modal>
@@ -259,6 +314,33 @@ export class SentryAppExternalIssueActions extends React.Component {
     );
   }
 }
+
+const Wrapped = withApi(SentryAppExternalIssueActions);
+export {Wrapped as SentryAppExternalIssueActions};
+
+const IssueLink = styled('div')`
+  display: flex;
+  align-items: center;
+  min-width: 0;
+`;
+
+const IssueLinkContainer = styled('div')`
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const AddRemoveIcon = styled(InlineSvg)`
+  height: ${space(1.5)};
+  color: ${p => p.theme.gray4};
+  transition: 0.2s transform;
+  cursor: pointer;
+  box-sizing: content-box;
+  padding: ${space(1)};
+  margin: -${space(1)};
+  ${p => (p.isLinked ? '' : 'transform: rotate(45deg) scale(0.9);')};
+`;
 
 const IssueTitle = styled('div')`
   font-size: 1.1em;

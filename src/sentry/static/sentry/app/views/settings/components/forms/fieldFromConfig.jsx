@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import styled from 'react-emotion';
 
 import BooleanField from './booleanField';
 import EmailField from './emailField';
@@ -22,6 +23,7 @@ export default class FieldFromConfig extends React.Component {
         'choice',
         'choice_mapper',
         'email',
+        'hidden',
         'multichoice',
         'number',
         'radio',
@@ -76,6 +78,8 @@ export default class FieldFromConfig extends React.Component {
         return <BooleanField {...props} />;
       case 'email':
         return <EmailField {...props} />;
+      case 'hidden':
+        return <HiddenField {...props} type="hidden" />;
       case 'string':
       case 'text':
       case 'url':
@@ -109,3 +113,9 @@ export default class FieldFromConfig extends React.Component {
     }
   }
 }
+
+// Input fields, by default, take up a set amount of space in the UI,
+// even if the input itself is hidden.
+const HiddenField = styled(InputField)`
+  display: none;
+`;

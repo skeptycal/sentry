@@ -271,8 +271,8 @@ def percy(request):
     return percy
 
 
-@pytest.fixture(scope='function')
-def browser(request, percy, live_server):
+@pytest.fixture(scope='session')
+def _browser(request, percy, live_server):
     window_size = request.config.getoption('window_size')
     window_width, window_height = list(map(int, window_size.split('x', 1)))
 
@@ -324,15 +324,20 @@ def browser(request, percy, live_server):
     request.addfinalizer(fin)
 
     browser = Browser(driver, live_server, percy)
-
-    if hasattr(request, 'cls'):
-        request.cls.browser = browser
+    request.session.browser = browser
     request.node.browser = browser
 
     # bind webdriver to percy for snapshots
     percy.loader.webdriver = driver
 
     return driver
+
+
+@pytest.fixture(scope='class')
+def browser(request, _browser):
+    if hasattr(request, 'cls'):
+        request.cls.browser = request.session.browser
+    request.session.browser.driver.delete_all_cookies()
 
 
 @pytest.fixture(scope='session', autouse=True)
